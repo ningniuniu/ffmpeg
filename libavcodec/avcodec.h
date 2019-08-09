@@ -1503,7 +1503,11 @@ typedef struct AVPacket {
  * be discarded by the decoder.  I.e. Non-reference frames.
  */
 #define AV_PKT_FLAG_DISPOSABLE 0x0010
-
+/**
+ * Flag is used to indicate packets that contain only one nal,
+ * improve performance of ff_avc_parse_nal_units
+ */
+#define AV_PKT_FLAG_ONE_NAL 0x0020
 
 enum AVSideDataParamChangeFlags {
     AV_SIDE_DATA_PARAM_CHANGE_CHANNEL_COUNT  = 0x0001,

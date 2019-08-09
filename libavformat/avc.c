@@ -68,20 +68,21 @@ const uint8_t *ff_avc_find_startcode(const uint8_t *p, const uint8_t *end){
     return out;
 }
 
-int ff_avc_parse_nal_units(AVIOContext *pb, const uint8_t *buf_in, int size)
+int ff_avc_parse_nal_units(AVIOContext *pb, const uint8_t *buf_in, int size,
+                           int one_nal)
 {
     const uint8_t *p = buf_in;
     const uint8_t *end = p + size;
     const uint8_t *nal_start, *nal_end;
 
     size = 0;
-    nal_start = ff_avc_find_startcode(p, end);
+    nal_start = one_nal ? p : ff_avc_find_startcode(p, end);
     for (;;) {
         while (nal_start < end && !*(nal_start++));
         if (nal_start == end)
             break;
 
-        nal_end = ff_avc_find_startcode(nal_start, end);
+        nal_end = one_nal ? end : ff_avc_find_startcode(nal_start, end);
         avio_wb32(pb, nal_end - nal_start);
         avio_write(pb, nal_start, nal_end - nal_start);
         size += 4 + nal_end - nal_start;
@@ -97,7 +98,7 @@ int ff_avc_parse_nal_units_buf(const uint8_t *buf_in, uint8_t **buf, int *size)
     if(ret < 0)
         return ret;
 
-    ff_avc_parse_nal_units(pb, buf_in, *size);
+    ff_avc_parse_nal_units(pb, buf_in, *size, 0);
 
     av_freep(buf);
     *size = avio_close_dyn_buf(pb, buf);

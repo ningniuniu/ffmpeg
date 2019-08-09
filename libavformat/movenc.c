@@ -5331,7 +5331,8 @@ int ff_mov_write_packet(AVFormatContext *s, AVPacket *pkt)
                     goto err;
                 }
             } else {
-                size = ff_avc_parse_nal_units(pb, pkt->data, pkt->size);
+                size = ff_avc_parse_nal_units(pb, pkt->data, pkt->size,
+                                              pkt->flags & AV_PKT_FLAG_ONE_NAL);
             }
         }
     } else if (par->codec_id == AV_CODEC_ID_HEVC && trk->vos_len > 6 &&

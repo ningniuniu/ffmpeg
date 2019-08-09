@@ -1036,7 +1036,7 @@ int ff_hevc_annexb2mp4(AVIOContext *pb, const uint8_t *buf_in,
     uint8_t *buf, *end, *start = NULL;
 
     if (!filter_ps) {
-        ret = ff_avc_parse_nal_units(pb, buf_in, size);
+        ret = ff_avc_parse_nal_units(pb, buf_in, size, 0);
         goto end;
     }
 
